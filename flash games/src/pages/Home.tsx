@@ -19,14 +19,7 @@ const Home = () => {
 
     const [otherArr, setOtherArr] = useState<objInterface[]>(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]))
 
-
     const [isEnteredRoom, setIsEnteredRoom] = useState(false)
-
-    const startHandler = () => {
-        setStart(true)
-        setSteps(0)
-        setTime(0)
-    }
 
     const joinRoomHandler = (e: FormEvent) => {
         e.preventDefault()
@@ -35,7 +28,7 @@ const Home = () => {
 
     const createRoomHandler = (e: FormEvent) => {
         e.preventDefault()
-        console.log(roomName)
+        //console.log(roomName)
         socket.emit("createroom", roomName)
     }
 
@@ -43,12 +36,12 @@ const Home = () => {
 
     useEffect(() => {
         socket.on("connect", () => {
-            console.log("user connected", socket.id)
+            //console.log("user connected", socket.id)
             setSocketId(socket.id!)
         });
 
         socket.on('data', (data: any, id) => {
-            console.log(data)
+            //console.log(data)
             if (id !== socketId) {
                 setOtherArr([...data])
             }
@@ -96,12 +89,15 @@ const Home = () => {
                         <div className='flex items-center justify-center w-full mt-20'>
                             <button
                                 onClick={() => { setMode('create'); setMessage(''); setErrorMessage('') }}
-                                style={mode === "create" ? { background: "#e495e4" } : {}}
-                                className='border border-black  p-2 px-10 w-[200px]'>Create Room</button>
+                                style={mode === "create" ? { background: "#a312a3", color: "white" } : {}}
+                                className='border border-black  p-2 px-5 w-[100px] '
+                            >
+                                Create
+                            </button>
                             <button
                                 onClick={() => { setMode('join'); setMessage(''); setErrorMessage('') }}
-                                style={mode === "join" ? { background: "#e495e4" } : {}}
-                                className='border border-black p-2 px-10 w-[200px]'>Join Room</button>
+                                style={mode === "join" ? { background: "#9b119b", color: 'white' } : {}}
+                                className='border border-black p-2 px-5 w-[100px] '>Join </button>
                         </div>
                         {
                             mode === "create" ?

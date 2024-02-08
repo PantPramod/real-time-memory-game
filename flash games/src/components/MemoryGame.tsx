@@ -36,7 +36,7 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomNam
 
   const clickHandler = (currentObj: objInterface, index: number) => {
 
-    console.log(socket.id)
+    //console.log(socket.id)
     if (currentObj.value === 0) {
       let rotateSound = new Audio(wrong)
       rotateSound.play()
@@ -115,11 +115,11 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomNam
 
   return (
 
-    <div className="flex items-center justify-evenly">
+    <div className="flex items-center justify-evenly flex-col gap-y-5">
       <div className="">
         <h3 className='text-center'>Time: {time} s</h3>
-        <h3 className='text-center'>Steps: {steps}</h3>
-        <h2>Opponent Game Board</h2>
+        {/* <h3 className='text-center'>Steps: {steps}</h3> */}
+        <h2 className="text-center">You </h2>
         <div className="container">
           {arr.map((item, index) => <div
             key={item.id}
@@ -135,9 +135,9 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomNam
       </div>
 
       <div className="">
-        <h3 className='text-center'>Time: {time} s</h3>
-        <h3 className='text-center'>Steps: {steps}</h3>
-        <h2>Opponent Game Board</h2>
+        {/* <h3 className='text-center'>Time: {time} s</h3> */}
+        {/* <h3 className='text-center'>Steps: {steps}</h3> */}
+        <h2 className="text-center">Opponent Game </h2>
         <div className="container">
           {otherArr.length > 0 && otherArr.map((item: any, index: any) => <div
             key={item?.id}

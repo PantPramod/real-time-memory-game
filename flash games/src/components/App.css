@@ -1,17 +1,17 @@
 .container {
   display: flex;
   flex-wrap: wrap;
-  width: 280px;  
+  width: 200px;  
   /* 400 px for desktop */
   margin: auto;
-  margin-top: 100px;
+  margin-top: 10px;
 }
 
 .box {
   border: 0.5px solid rgb(66, 64, 64);
-  width: 70px;
+  width: 50px;
   /* 100px for desktop */
-  height: 70px;
+  height: 50px;
   /* 100px for desktop */
   display: flex;
   justify-content: center;
@@ -19,9 +19,9 @@
 }
 
 .empty {
-  width: 70px;
+  width: 50px;
   /* 100px for desktop */
-  height: 70px;
+  height: 50px;
   /* 100px for desktop */
   display: flex;
   justify-content: center;
@@ -31,9 +31,9 @@
 
 .flip-card {
   background-color: transparent;
-  width: 70px;
+  width: 50px;
   /* 100px for desktop */
-  height: 70px;
+  height: 50px;
   /* 100px for desktop */
   perspective: 1000px;
 }
@@ -77,7 +77,7 @@
 }
 
 
-/* @media screen and (min-width: 768px) {
+@media screen and (min-width: 768px) {
 .container{
   width: 400px;
 }
@@ -99,4 +99,4 @@
  box-shadow:  17px 17px 29px #7a97a0,
               -17px -17px 29px #c0ebfa;
 }
-} */
+}

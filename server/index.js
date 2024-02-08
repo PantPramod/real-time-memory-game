@@ -17,7 +17,7 @@ const io = new Server(server, {
 
 const rooms = [{ id: "room1", count: 0 }]
 io.on("connection", (socket) => {
-    console.log("User connected", socket.id)
+    //console.log("User connected", socket.id)
 
     socket.on("createroom", (roomName) => {
         let isRoomExist = false
@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
             }
             socket.join(roomName)
             socket.emit("isroomcreated", true, `Room ${roomName} create and joined`)
-            console.log(`Room ${roomName} created and joined by user ${socket.id}`)
+            //console.log(`Room ${roomName} created and joined by user ${socket.id}`)
         }
     })
 
@@ -60,19 +60,19 @@ io.on("connection", (socket) => {
                 }
             }
             socket.emit("isroomjoined", true, `Room ${roomName} joined by user ${socket.id}`)
-            console.log(`Room ${roomName} joined by user ${socket.id}`)
+            //console.log(`Room ${roomName} joined by user ${socket.id}`)
         } else {
             socket.emit("isroomjoined", false, `room not exist`)
         }
     })
 
     socket.on("data", (roomName, data) => {
-        console.log("roomname==>", roomName, "data===>", data)
+        //console.log("roomname==>", roomName, "data===>", data)
         socket.to(roomName).emit("data", data, socket.id)
     })
 
     socket.on("disconnect", () => {
-        console.log("user disconnected", socket.id)
+        //console.log("user disconnected", socket.id)
     })
 })
 
@@ -86,5 +86,5 @@ app.get("/", (req, res) => {
 
 
 server.listen(PORT, () => {
-    console.log("server listening at PORT", PORT)
+    //console.log("server listening at PORT", PORT)
 })
