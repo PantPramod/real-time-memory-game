@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import './App.css'
 import Box from "./Box"
 import rotate from '../assets/rotate.mp3'
@@ -6,9 +6,9 @@ import success from '../assets/success.mp3'
 import wrong from '../assets/wrong.mp3'
 import win from '../assets/win.mp3'
 import start from '../assets/start.mp3'
-import { io } from "socket.io-client"
 
-interface objInterface {
+
+export interface objInterface {
   id: number,
   value: number,
   isOpen: boolean
@@ -19,17 +19,24 @@ type memoryGameProps = {
   steps: number,
   setSteps: React.Dispatch<React.SetStateAction<number>>,
   time: number,
-  setTime: React.Dispatch<React.SetStateAction<number>>
+  setTime: React.Dispatch<React.SetStateAction<number>>,
+  socket: any
+  roomName: string
+  otherArr: objInterface[]
+  setOtherArr: Dispatch<SetStateAction<objInterface[]>>
 }
-const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGameProps) => {
+const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomName, otherArr, setOtherArr }: memoryGameProps) => {
 
-  const socket = useMemo(() => io("http://localhost:8000"), [])
+
   const [arr, setArr] = useState<objInterface[]>(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]))
   const [obj, setObj] = useState<objInterface | null>(null)
   const [id, setId] = useState<null | number>(null)
 
+
+
   const clickHandler = (currentObj: objInterface, index: number) => {
 
+    console.log(socket.id)
     if (currentObj.value === 0) {
       let rotateSound = new Audio(wrong)
       rotateSound.play()
@@ -38,18 +45,19 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGamePro
     if (!obj || obj && obj.id !== currentObj.id) {
       let rotateSound = new Audio(rotate)
       rotateSound.play()
+      setSteps((prev) => prev + 1)
+      setObj({ ...currentObj })
+      setId(index)
+      arr[index].isOpen = true
+      setArr([...arr])
+      socket.emit("data", roomName, [...arr])
     }
-
-    setSteps((prev) => prev + 1)
-    setObj({ ...currentObj })
-    setId(index)
-    arr[index].isOpen = true
-    setArr([...arr])
     if (obj?.value === currentObj.value && obj.id !== currentObj.id) {
       setTimeout(() => {
         arr[index].value = 0
         arr[id!].value = 0
         setArr([...arr])
+        socket.emit("data", roomName, [...arr])
         let rotateSound = new Audio(success)
         rotateSound.play()
         return;
@@ -60,6 +68,7 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGamePro
       setTimeout(() => {
         arr[id!].isOpen = false
         setArr([...arr])
+        socket.emit("data", roomName, [...arr])
       }, 600)
 
     }
@@ -68,13 +77,19 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGamePro
 
   useEffect(() => {
     let sum = arr.reduce((acc, current) => current.value + acc, 0)
-
-    if (sum === 0) {
+    let otherSum = otherArr.reduce((acc: any, current: any) => current.value + acc, 0)
+    if (sum === 0 || otherSum == 0) {
       setArr([...shuffle([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8])])
+      setOtherArr([...shuffle([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8])])
       setObj(null)
       setId(null)
       let rotateSound = new Audio(win)
       rotateSound.play()
+      if (sum === 0) {
+        alert("You Won")
+      } else if (otherSum === 0) {
+        alert("Opponent Won")
+      }
       closeGame()
 
     }
@@ -95,32 +110,45 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGamePro
 
 
 
-  useEffect(() => {
-    //on connection with socket io server
-    socket.on("connect", () => {
-      console.log("user connected", socket.id)
-    });
 
-    return () => {
-      socket.disconnect()
-    }
-  }, [])
+
 
   return (
-    <div className="">
-      <h3 className='text-center'>Time: {time} s</h3>
-      <h3 className='text-center'>Steps: {steps}</h3>
-      <div className="container">
-        {arr.map((item, index) => <div
-          key={item.id}
-          onClick={() => clickHandler(item, index)}
-          className="">
-          <Box
-            value={item.value}
-            isOpen={item.isOpen}
-          />
+
+    <div className="flex items-center justify-evenly">
+      <div className="">
+        <h3 className='text-center'>Time: {time} s</h3>
+        <h3 className='text-center'>Steps: {steps}</h3>
+        <h2>Opponent Game Board</h2>
+        <div className="container">
+          {arr.map((item, index) => <div
+            key={item.id}
+            onClick={() => clickHandler(item, index)}
+            className="">
+            <Box
+              value={item.value}
+              isOpen={item.isOpen}
+            />
+          </div>
+          )}
         </div>
-        )}
+      </div>
+
+      <div className="">
+        <h3 className='text-center'>Time: {time} s</h3>
+        <h3 className='text-center'>Steps: {steps}</h3>
+        <h2>Opponent Game Board</h2>
+        <div className="container">
+          {otherArr.length > 0 && otherArr.map((item: any, index: any) => <div
+            key={item?.id}
+            className="">
+            <Box
+              value={item?.value}
+              isOpen={item?.isOpen}
+            />
+          </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -129,7 +157,7 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime }: memoryGamePro
 export default MemoryGame
 
 
-function shuffle(array: number[]) {
+export function shuffle(array: number[]) {
   let currentIndex = array.length, randomIndex;
   while (currentIndex > 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
