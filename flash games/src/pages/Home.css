@@ -1,0 +1,15 @@
+.btn{
+    background-color: rgb(17, 196, 17);
+    padding: 10px 20px;
+    display: block;
+    margin: auto;
+    margin-top: 50px; 
+    border-radius: 10px;
+    color:white;
+    border:none;
+    cursor: pointer;
+}
+
+.text-center{
+    text-align: center;
+}
