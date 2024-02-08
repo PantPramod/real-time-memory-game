@@ -4,7 +4,7 @@ import MemoryGame, { objInterface, shuffle } from '../components/MemoryGame'
 import { io } from 'socket.io-client'
 
 const Home = () => {
-    const socket = useMemo(() => io("http://localhost:8000"), [])
+    const socket = useMemo(() => io("https://memory-game-8k1p.onrender.com"), [])
 
     const [message, setMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')

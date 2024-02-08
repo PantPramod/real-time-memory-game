@@ -25,7 +25,7 @@ type memoryGameProps = {
   otherArr: objInterface[]
   setOtherArr: Dispatch<SetStateAction<objInterface[]>>
 }
-const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomName, otherArr, setOtherArr }: memoryGameProps) => {
+const MemoryGame = ({ closeGame, setSteps, time, setTime, socket, roomName, otherArr, setOtherArr }: memoryGameProps) => {
 
 
   const [arr, setArr] = useState<objInterface[]>(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]))
@@ -139,7 +139,7 @@ const MemoryGame = ({ closeGame, steps, setSteps, time, setTime, socket, roomNam
         {/* <h3 className='text-center'>Steps: {steps}</h3> */}
         <h2 className="text-center">Opponent Game </h2>
         <div className="container">
-          {otherArr.length > 0 && otherArr.map((item: any, index: any) => <div
+          {otherArr.length > 0 && otherArr.map((item: any) => <div
             key={item?.id}
             className="">
             <Box
