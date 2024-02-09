@@ -21,7 +21,7 @@ type memoryGameProps = {
   time: number,
   setTime: React.Dispatch<React.SetStateAction<number>>,
   socket: any
-  roomName: string
+  roomName: string | number | null
   otherArr: objInterface[]
   setOtherArr: Dispatch<SetStateAction<objInterface[]>>
 }
@@ -109,17 +109,17 @@ const MemoryGame = ({ closeGame, setSteps, time, setTime, socket, roomName, othe
 
 
 
-
-
-
-
   return (
 
-    <div className="flex items-center justify-evenly flex-col md:flex-row gap-y-5">
+    <div
+      style={{
+        backgroundImage: `url(${'/images/bg3.jpg'})`,
+      }}
+      className="flex items-center justify-evenly flex-col md:flex-row gap-y-5 min-h-screen">
       <div className="">
-        <h3 className='text-center'>Time: {time} s</h3>
+        <h3 className='text-center text-white'>Time: {time} s</h3>
         {/* <h3 className='text-center'>Steps: {steps}</h3> */}
-        <h2 className="text-center">You </h2>
+        <h2 className="text-center text-white uppercase">You </h2>
         <div className="container">
           {arr.map((item, index) => <div
             key={item.id}
@@ -137,7 +137,7 @@ const MemoryGame = ({ closeGame, setSteps, time, setTime, socket, roomName, othe
       <div className="">
         {/* <h3 className='text-center'>Time: {time} s</h3> */}
         {/* <h3 className='text-center'>Steps: {steps}</h3> */}
-        <h2 className="text-center">Opponent Game </h2>
+        <h2 className="text-center text-white uppercase">Opponent</h2>
         <div className="container">
           {otherArr.length > 0 && otherArr.map((item: any) => <div
             key={item?.id}

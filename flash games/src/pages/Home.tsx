@@ -5,6 +5,7 @@ import { io } from 'socket.io-client'
 
 const Home = () => {
     const socket = useMemo(() => io("https://memory-game-8k1p.onrender.com"), [])
+    // const socket = useMemo(() => io("http://localhost:8000"), [])
 
     const [message, setMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
@@ -12,6 +13,8 @@ const Home = () => {
     const [steps, setSteps] = useState(0)
     const [time, setTime] = useState(0)
     const [mode, setMode] = useState<'create' | 'join'>('create')
+
+    const [roomNo, setRoomNo] = useState<null | number>(null)
 
     const [roomName, setRoomName] = useState('')
 
@@ -41,7 +44,7 @@ const Home = () => {
         });
 
         socket.on('data', (data: any, id) => {
-            //console.log(data)
+            // console.log(data, id)
             if (id !== socketId) {
                 setOtherArr([...data])
             }
@@ -54,11 +57,13 @@ const Home = () => {
             setTime(0)
         })
 
-        socket.on("isroomcreated", (created, msg) => {
+        socket.on("isroomcreated", (created, msg, rn) => {
             if (created) {
+                setRoomNo(rn)
                 setMessage(msg);
                 setErrorMessage('');
                 setIsEnteredRoom(true)
+                
             } else {
                 setErrorMessage(msg)
                 setMessage('')
@@ -66,8 +71,9 @@ const Home = () => {
             }
         })
 
-        socket.on("isroomjoined", (joined, msg) => {
+        socket.on("isroomjoined", (joined, msg, rn) => {
             if (joined) {
+                setRoomNo(rn)
                 setMessage(msg);
                 setErrorMessage('');
                 setIsEnteredRoom(true)
@@ -81,38 +87,37 @@ const Home = () => {
     }, [])
 
     return (
-        <div>
+        <div className=''>
             {/* <h1>Socket Id : {socketId}</h1> */}
             {
                 !isEnteredRoom ?
-                    <>
-                        <div className='flex items-center justify-center w-full mt-20'>
+                    <div
+                        style={{
+                            backgroundImage: `url(${'/images/bg.jpg'})`,
+                        }}
+                        className='bg-cover h-[100vh] '
+                    >
+                        <div className='flex items-center justify-center w-full py-10 font-["Honk"] text-2xl tracking-[100px]'>
                             <button
-                                onClick={() => { setMode('create'); setMessage(''); setErrorMessage('') }}
-                                style={mode === "create" ? { background: "#a312a3", color: "white" } : {}}
-                                className='border border-black  p-2 px-5 w-[100px] '
+                                onClick={() => { setMode('create'); setMessage(''); setErrorMessage(''); setRoomName('') }}
+                                style={mode === "create" ? { background: "#a312a3" } : {}}
+                                className='tracking-[3px] border border-white  p-2 px-5  text-white uppercase'
                             >
                                 Create
                             </button>
                             <button
-                                onClick={() => { setMode('join'); setMessage(''); setErrorMessage('') }}
+                                onClick={() => { setMode('join'); setMessage(''); setErrorMessage(''); setRoomNo(null) }}
                                 style={mode === "join" ? { background: "#9b119b", color: 'white' } : {}}
-                                className='border border-black p-2 px-5 w-[100px] '>Join </button>
+                                className='tracking-[3px] border border-white p-2 px-5  text-white uppercase'>Join </button>
                         </div>
                         {
                             mode === "create" ?
                                 <form onSubmit={createRoomHandler}>
 
-                                    <input
-                                        type='text'
-                                        placeholder='Room Name'
-                                        value={roomName}
-                                        onChange={e => setRoomName(e.target.value)}
-                                        className='input'
-                                    />
+
                                     <button
                                         type='submit'
-                                        className='mx-auto block bg-purple-500 mt-2 text-white p-2 px-10 rounded-md'
+                                        className='bg-transparent  mx-auto block border border-blue-500 mt-10 text-blue-500 p-2 px-10 rounded-md'
                                     >Create Room
                                     </button>
                                 </form> :
@@ -120,44 +125,54 @@ const Home = () => {
 
                                     <input
                                         type='text'
-                                        placeholder='Room Name'
+                                        placeholder='Enter Room Name'
                                         value={roomName}
                                         onChange={e => setRoomName(e.target.value)}
-                                        className='input'
+                                        className='input bg-transparent'
                                     />
                                     <button
                                         type='submit'
-                                        className='mx-auto block bg-blue-500 mt-2 text-white p-2 px-10 rounded-md'
+                                        className='bg-transparent  mx-auto block border border-blue-500 mt-10 text-blue-500 p-2 px-10 rounded-md'
 
                                     >Join Room
                                     </button>
                                 </form>
                         }
-
-
                         {errorMessage && <p className='text-red-600 text-center'>{errorMessage}</p>}
+                    </div> :
+                    <div className=''>
 
 
-                    </> :
-                    <>
-                        {message && <p className='text-green-600 text-center'>{message}</p>}
                         {
-                            start &&
-                            <>
-                                <MemoryGame
-                                    closeGame={() => setStart(false)}
-                                    steps={steps}
-                                    setSteps={setSteps}
-                                    time={time}
-                                    setTime={setTime}
-                                    socket={socket}
-                                    roomName={roomName}
-                                    otherArr={otherArr}
-                                    setOtherArr={setOtherArr}
-                                />
-                            </>
+                            start ?
+                                <>
+                                    <MemoryGame
+                                        closeGame={() => setStart(false)}
+                                        steps={steps}
+                                        setSteps={setSteps}
+                                        time={time}
+                                        setTime={setTime}
+                                        socket={socket}
+                                        roomName={roomNo}
+                                        otherArr={otherArr}
+                                        setOtherArr={setOtherArr}
+                                    />
+                                </>
+                                :
+                                <div
+                                    style={{
+                                        backgroundImage: `url(${'/images/bg2.jpg'})`,
+                                    }}
+                                    className='h-screen bg-cover bg-no-repeat flex items-center justify-center flex-col gap-y-5'>
+                                    {message && <p className='uppercase text-white text-center text-2xl'>{message}</p>}
+                                    <p>{`http://memorygame124.netlify.app/`}</p>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(String(roomNo))}
+                                        className='bg-green-600 text-white px-4 py-2 rounded-md'>Copy Room No</button>
+                                    <div className="loader"></div>
+                                </div>
                         }
-                    </>
+                    </div>
             }
         </div>
     )

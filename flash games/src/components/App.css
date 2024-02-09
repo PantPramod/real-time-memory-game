@@ -62,8 +62,8 @@
 .flip-card-front {
      border-radius: 8px;
     background: #9dc1cd;
-    box-shadow:  10px 10px 20px #7a97a0,
-                 -10px -10px 20px #c0ebfa;
+    /* box-shadow:  10px 10px 20px #7a97a0,
+                 -10px -10px 20px #c0ebfa; */
 }
 
 .flip-card-back {
@@ -96,7 +96,7 @@
 
 .flip-card-front {
  
- box-shadow:  17px 17px 29px #7a97a0,
-              -17px -17px 29px #c0ebfa;
+ /* box-shadow:  17px 17px 29px #7a97a0,
+              -17px -17px 29px #c0ebfa; */
 }
 }
