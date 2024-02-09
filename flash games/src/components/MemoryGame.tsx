@@ -115,7 +115,7 @@ const MemoryGame = ({ closeGame, setSteps, time, setTime, socket, roomName, othe
 
   return (
 
-    <div className="flex items-center justify-evenly flex-col gap-y-5">
+    <div className="flex items-center justify-evenly flex-col md:flex-row gap-y-5">
       <div className="">
         <h3 className='text-center'>Time: {time} s</h3>
         {/* <h3 className='text-center'>Steps: {steps}</h3> */}
